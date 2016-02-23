@@ -23,6 +23,7 @@ for n = 1:16
     end
 end
 
+<<<<<<< HEAD
 %delta e
 
 swapIndex = zeros(16,16);
@@ -55,10 +56,20 @@ end
 
 
 
+% Load filter for error diffusion
+load('Filters.mat');
 
+% Return to RGB
+%NewRGB = lab2rgb(LABvalues);
 
+R = image2(:,:,1);
+G = image2(:,:,2);
+B = image2(:,:,3);
 
+% Error diffusion of all channels
+Rf = errordif(R, SF); % SF, FanDi, JaJuNi
+Gf = errordif(G, SF); % SF, FanDi, JaJuNi
+Bf = errordif(B, SF); % SF, FanDi, JaJuNi
 
-
-
+DifIm = cat(3, Rf, Gf, Bf);
 
