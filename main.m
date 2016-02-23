@@ -24,3 +24,22 @@ for n = 1:16
     end
 end
 
+
+
+
+% Load filter for error diffusion
+load('Filters.mat');
+
+% Return to RGB
+NewRGB = lab2rgb(LABvalues);
+
+R = NewRGB(:,:,1);
+G = NewRGB(:,:,2);
+B = NewRGB(:,:,3);
+
+% Error diffusion of all channels
+Rf = errordif(R, SF); % SF, FanDi, JaJuNi
+Gf = errordif(G, SF); % SF, FanDi, JaJuNi
+Bf = errordif(B, SF); % SF, FanDi, JaJuNi
+
+DifIm = cat(3, Rf, Gf, Bf);
