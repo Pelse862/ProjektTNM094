@@ -3,9 +3,9 @@
 w = 32; h = 32;
 
 
-for n = 1:50
+for n = 1:100
 
-    image = imread(sprintf('DB/%d.jpg',n));
+    image = imread(sprintf('databas/%d.jpg',n));
 
     subImageTemp = imresize((im2double(image)), [w, h]);
     
@@ -17,4 +17,4 @@ for n = 1:50
 
 end
 
-save('DB.mat', 'LABvalue');
+save('DB2.mat', 'LABvalue');
