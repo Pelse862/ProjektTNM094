@@ -3,7 +3,7 @@
 w = 32; h = 32;
 
 
-for n = 1:100
+for n = 1:200
 
     image = imread(sprintf('databas/%d.jpg',n));
 
