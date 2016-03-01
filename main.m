@@ -1,4 +1,4 @@
-image = imread('gudde.jpg');
+image = imread('bild.jpg');
 
 image = im2double(image);
 
@@ -18,8 +18,8 @@ LABvalues = ones(blockSize,blockSize,3);
 %find lab values
 for n = 1:loopSize
     for j = 1:loopSize
-        temp = ca{n,j};
-        temp = temp;
+        tempIm = ca{n,j};
+        temp = tempIm;
    
         temp = rgb2lab(temp);
         LABvalues(n,j,1) = mean(mean(temp(:,:,1)));
@@ -55,54 +55,49 @@ for n = 1:100
     imageArray{n} = imread(sprintf('databas/%d.jpg',n));
 end
 
+filt=[0 0 7; 3 5 1]/16;
+
 for n = 1:loopSize
    for j = 1:loopSize
+       
        temp = imageArray(swapIndex(n,j));
        temp = cell2mat(temp);
+
        rgbImage = imresize(temp, [blockSize blockSize]);
        rgbImage = im2double(rgbImage);
-       image2( (1+( (n-1)*blockSize)):(n*blockSize) , (1+( (j-1)*blockSize)):(j*blockSize),:) = rgbImage;
+       
+       tileXYZ = rgb2xyz(rgbImage);
+       
+       temp = ca{n,j};
+       OriTile = rgb2xyz(temp); 
+        
+       Xdif = mean(mean(abs(OriTile(:,:,1) - tileXYZ(:,:,1))));
+       Ydif = mean(mean(abs(OriTile(:,:,2) - tileXYZ(:,:,2))));
+       Zdif = mean(mean(abs(OriTile(:,:,3) - tileXYZ(:,:,3))));
+       
+       %OriTile = xyz2rgb(OriTile);
+       %rgbDif = xyz2rgb([Xdif, Ydif, Zdif]);
+       
+       %rgbDif = floor(255*rgbDif);
+       
+       OriTile(:,:,1) = errordif(OriTile(:,:,1),Xdif*filt);
+       OriTile(:,:,2) = errordif(OriTile(:,:,2),Ydif*filt);
+       OriTile(:,:,3) = errordif(OriTile(:,:,3),Zdif*filt);
+       
+       image2( (1+( (n-1)*blockSize)):(n*blockSize) , (1+( (j-1)*blockSize)):(j*blockSize),:) = OriTile;
       
    end
-   n
+   n;
 end
-%%
 
-% Load filter for error diffusion
-load('Filters.mat');
+imshow(image);
+figure;
+imshow(image2);
+
 
 % Return to RGB
 %NewRGB = lab2rgb(LABvalues);
-image2 = im2double(image2);
-R = image2(:,:,1);
-G = image2(:,:,2);
-B = image2(:,:,3);
-
-% Error diffusion of all channels
-Rf = errordif(R, SF); % SF, FanDi, JaJuNi
-Gf = errordif(G, SF); % SF, FanDi, JaJuNi
-Bf = errordif(B, SF); % SF, FanDi, JaJuNi
-DifIm(:,:,1) = Rf;
-DifIm(:,:,2) = Gf;
-DifIm(:,:,3) = Bf;
-imshow(DifIm)
-figure
-
-
-Rf = dither(R);
-Gf = dither(G);
-Bf = dither(B);
-
-
-DifIm(:,:,1) = Rf;
-DifIm(:,:,2) = Gf;
-DifIm(:,:,3) = Bf;
-DifIm = im2double(DifIm);
-imshow(image)
-figure
-imshow(image2)
-figure
-imshow(DifIm)
+%image2 = im2double(xyz2rgb(image2));
 
 
 
