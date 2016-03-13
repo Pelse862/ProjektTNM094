@@ -1,12 +1,14 @@
 clc
 
-%imageLoad = imread('sloth.jpg');
+
+addpath('resources/scielab');
+
 imageLoad = imread('bild.jpg');
 
 image = im2double(imageLoad);
 
 %load db
-load('DB2.mat');
+load('resources/DB2.mat');
 
 
 rgbImage = imresize(image, [1024 1024]);
@@ -101,25 +103,4 @@ imshow(imageNewRes);
 
 %%
 
-
-load('illum.mat');
-load('xyz.mat');
-
-pixels = sqrt(1920^2 + 1080^2);
-screenInch = 12;
-ppi = pixels / screenInch;
-
-% Distens (inch)
-D = 19.7;
-
-samplePerDegree = ppi*D*tan(pi/180);
-
-xyzIm = rgb2xyz(image);
-xyzNewIm = rgb2xyz(imageNewRes);
-
-ill = CIED65*xyz;
-
-scieVal = scielab(samplePerDegree,xyzIm,xyzNewIm,ill,'xyz');
-
-scieValScal = mean(mean(scieVal))
 
