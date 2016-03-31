@@ -21,8 +21,8 @@ if (nargin<3)
   exp = 1/3;
 end
 if (nargin<2)
-  disp('Using XYZ values of normalized D65 (95.05, 100, 108.88) as white point.');
-  disp('You should really provide your own white point data to ensure reasonable results.');
+  %disp('Using XYZ values of normalized D65 (95.05, 100, 108.88) as white point.');
+  %disp('You should really provide your own white point data to ensure reasonable results.');
   whitepoint = [95.05 100 108.88];
 end
 

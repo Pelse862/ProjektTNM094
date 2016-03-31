@@ -9,7 +9,7 @@ ill = CIED65*xyz;
 
 pixels = sqrt(1920^2 + 1080^2);
 screenInch = 12;
-ppi = pixels / screenInch;
+ppi = (pixels / screenInch) / 16;
 
 % Distens (inch)
 D = 19.7;

@@ -2,19 +2,20 @@
 %Set image dimensions
 w = 32; h = 32;
 
-
-for n = 1:200
+for n = 1:150
 
     image = imread(sprintf('databas/%d.jpg',n));
 
     subImageTemp = imresize((im2double(image)), [w, h]);
     
-    temp = rgb2lab(subImageTemp);
-    L = mean2(temp(:,:,1));
-    a = mean2(temp(:,:,2));
-    b = mean2(temp(:,:,3));
-    LABvalue{n} = [L,a,b, n];    
+    Rmean = mean2(subImageTemp(:,:,1));
+    Gmean = mean2(subImageTemp(:,:,2));
+    Bmean = mean2(subImageTemp(:,:,3));
+    
+    temp = rgb2lab([Rmean,Gmean,Bmean]);
+    
+    LABvalue{n} = [temp(1),temp(2),temp(3), n];    
 
 end
 
-save('DB2.mat', 'LABvalue');
+save('DB.mat', 'LABvalue');

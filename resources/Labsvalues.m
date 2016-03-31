@@ -6,16 +6,18 @@ LABvalues = ones(blockSize,blockSize,3);
 %find lab values
 for n = 1:loopSize
     for j = 1:loopSize
-        tempIm = ca{n,j};
-        temp = tempIm;
+        DBImage = ca{n,j};
    
-        temp = rgb2lab(temp);
-        LABvalues(n,j,1) = mean(mean(temp(:,:,1)));
-        LABvalues(n,j,2) = mean(mean(temp(:,:,2)));
-        LABvalues(n,j,3) = mean(mean(temp(:,:,3)));
-     
+        Rmean = mean(mean(DBImage(:,:,1)));
+        Gmean = mean(mean(DBImage(:,:,2)));
+        Bmean = mean(mean(DBImage(:,:,3)));
+        
+        DBImage_Lab = rgb2lab([Rmean, Gmean, Bmean]);
+       
+        LABvalues(n,j,1) = DBImage_Lab(1);
+        LABvalues(n,j,2) = DBImage_Lab(2);
+        LABvalues(n,j,3) = DBImage_Lab(3);
     end
-    
 end
 
 end
