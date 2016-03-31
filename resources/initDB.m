@@ -1,4 +1,5 @@
 
+
 %Set image dimensions
 w = 32; h = 32;
 

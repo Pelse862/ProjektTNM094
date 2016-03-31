@@ -1,4 +1,3 @@
-clc
 
 addpath('resources/');
 addpath('resources/scielab');
