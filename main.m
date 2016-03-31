@@ -2,7 +2,7 @@
 addpath('resources/');
 addpath('resources/scielab');
 
-imageLoad = im2double(imread('bild.jpg'));
+imageLoad = im2double(imread('eye.jpg'));
 
 %load db
 load('resources/DB.mat');
@@ -14,23 +14,20 @@ rgbImage = imresize(imageLoad, [1024 1024]);
 blockSize = 16;
 loopSize = 64;
 
-filter=[0 0 7; 3 5 1]/16;
+filter=[0.0 0.0 7.0; 3.0 5.0 1.0]/16.0;
 
 ca = mat2cell(rgbImage,blockSize*ones(1,size(rgbImage,1)/blockSize),blockSize*ones(1,size(rgbImage,2)/blockSize),3);
 
 disp('1: Calculating Lab-values from databas')
 LABvalues = Labsvalues( ca, blockSize, loopSize );
-disp('1: END')
 
 disp('2: Finding the most fitting image from datadas')
 swapIndex = DBIndexMatrix( loopSize, LABvalues );
-disp('2: END')
 
 disp('3: Importing databas to array')
-for n = 1:150
-    DBArray{n} = imread(sprintf('databas/%d.jpg',n));
+for n = 1:25
+    DBArray{n} = imread(sprintf('databas/1 (%d).jpg',n));
 end
-disp('3: END')
 
 disp('4: Matching databas images to tiles')
 for n = 1:loopSize
@@ -48,62 +45,52 @@ for n = 1:loopSize
 
        databasImage_lab(:,:,1) = databasImage_lab(:,:,1) + Lvalue;
        tileImage_RGB = lab2rgb(databasImage_lab);
-   
-     %{
-       Xdif = mean(mean(OriTile(:,:,1) - tileXYZ(:,:,1)));
-       Ydif = mean(mean(OriTile(:,:,2) - tileXYZ(:,:,2)));
-       Zdif = mean(mean(OriTile(:,:,3) - tileXYZ(:,:,3)));
+    
+       subImage = ca{n,j};
+       
+        
+       Rdif = mean(mean(subImage(:,:,1))) - mean(mean(tileImage_RGB(:,:,1)));
+       Gdif = mean(mean(subImage(:,:,2))) - mean(mean(tileImage_RGB(:,:,2)));
+       Bdif = mean(mean(subImage(:,:,3))) - mean(mean(tileImage_RGB(:,:,3)));
       
-       OriTileRGB = xyz2rgb( OriTile );
-       rgbDif = xyz2rgb([Xdif, Ydif, Zdif]);
-       
-       OriTileRGB(:,:,1) = errordif(OriTileRGB(:,:,1),rgbDif(1)*filter);
-       OriTileRGB(:,:,2) = errordif(OriTileRGB(:,:,2),rgbDif(2)*filter);
-       OriTileRGB(:,:,3) = errordif(OriTileRGB(:,:,3),rgbDif(3)*filter);
-       %}
-       
+       subImage(:,:,1) = errordif(subImage(:,:,1) + Rdif, filter);
+       subImage(:,:,2) = errordif(subImage(:,:,2) + Gdif, filter);
+       subImage(:,:,3) = errordif(subImage(:,:,3) + Bdif, filter);
+
        ResultImage( (1+( (n-1)*blockSize)):(n*blockSize) , (1+( (j-1)*blockSize)):(j*blockSize),:) = tileImage_RGB;
-       cellImage{n,j} = tileImage_RGB;   
+       
+       LabCorrected = Labsvalues({subImage}, blockSize, 1 );
+       newSwapIndex = DBIndexMatrix( 1, LabCorrected );
+
+       
+       cellImage = DBArray(newSwapIndex(1,1));
+       rgbImage = cell2mat(cellImage);
+
+       rgbImageResize = im2double(imresize(rgbImage, [blockSize blockSize]));      
+       
+       tileImage_lab = rgb2lab(subImage);
+       databasImage_lab = rgb2lab(rgbImageResize);
+
+       Lvalue = mean(mean(tileImage_lab(:,:,1))) - mean(mean(databasImage_lab(:,:,1)));  
+
+       databasImage_lab(:,:,1) = databasImage_lab(:,:,1) + Lvalue;
+       tileImage_RGB = lab2rgb(databasImage_lab);
+       
+       
+       correctedResultImage( (1+( (n-1)*blockSize)):(n*blockSize) , (1+( (j-1)*blockSize)):(j*blockSize),:) = tileImage_RGB;
        
    end
+   disp('4: Iteration ' + n)
 end
-disp('4: END')
 
+figure;
+inputImage = imresize(imageLoad, [1024 1024]);
+imshow(inputImage)
 figure;
 imshow(ResultImage);
-%%
-3
-LABvalues = Labsvalues( cellImage, blockSize, loopSize );
-
-%delta e
-4
-swapIndex = DBIndexMatrix( loopSize, LABvalues );
-
-
-for n = 1:loopSize
-   for j = 1:loopSize
-        
-       OriTile = rgb2xyz(ca{n,j});
-       
-       LabTile = xyz2lab(OriTile);
-       temp = imageArray(swapIndex(n,j));
-       temp = cell2mat(temp);
-       temp2 = rgb2lab(temp);
-       lval = mean(mean(LabTile(:,:,1))) - mean(mean(temp2(:,:,1)))
-       temp2(:,:,1) = temp2(:,:,1) + lval;
-       temp = lab2rgb(temp2);
-       rgbImage = imresize(temp, [blockSize blockSize]);
-       rgbImage = im2double(rgbImage);
-       
-       image2( (1+( (n-1)*blockSize)):(n*blockSize) , (1+( (j-1)*blockSize)):(j*blockSize),:) = rgbImage;
-       
-   end
-end
-
 figure;
-imshow(image);
-[xRes, yRes, ~] = size(imageLoad);
-imageNewRes = imresize(image2, [xRes yRes]);
-figure;
-imshow(imageNewRes);
+imshow(correctedResultImage);
 
+disp('5: Calculating SCLab values')
+ImageQuality(inputImage, ResultImage, 1);
+ImageQuality(inputImage, correctedResultImage);

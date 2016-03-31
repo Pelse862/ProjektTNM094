@@ -1,4 +1,4 @@
-function QualityValue = ImageQuality( originalImage, mosaicImage, ppi )
+function QualityValue = ImageQuality( originalImage, mosaicImage)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -9,15 +9,15 @@ ill = CIED65*xyz;
 
 pixels = sqrt(1920^2 + 1080^2);
 screenInch = 12;
-ppi = (pixels / screenInch) / 16;
+ppi = (pixels / screenInch) / (16*16);
 
 % Distens (inch)
-D = 19.7;
+D = 19.7*4;
 
 samplePerDegree = ppi*D*tan(pi/180);
 
-xyzIm = rgb2xyz(image);
-xyzNewIm = rgb2xyz(imageNewRes);
+xyzIm = rgb2xyz(originalImage);
+xyzNewIm = rgb2xyz(mosaicImage);
 
 
 scieVal = scielab(samplePerDegree,xyzIm,xyzNewIm,ill,'xyz');

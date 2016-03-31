@@ -5,7 +5,7 @@ w = 32; h = 32;
 
 for n = 1:150
 
-    image = imread(sprintf('databas/%d.jpg',n));
+    image = imread(sprintf('databas/1 (%d).jpg',n));
 
     subImageTemp = imresize((im2double(image)), [w, h]);
     

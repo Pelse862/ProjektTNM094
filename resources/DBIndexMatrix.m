@@ -7,7 +7,7 @@ load('DB.mat');
 swapIndex = zeros(8,8);
 for n = 1:loopSize
    for j = 1:loopSize
-       for k = 1:150
+       for k = 1:25
             temp = LABvalue{k};
             
             deltaEa = ( LABvalues(n,j,2)-temp(2) )^2; 
