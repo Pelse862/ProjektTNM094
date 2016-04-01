@@ -1,6 +1,7 @@
 function swapIndex = DBIndexMatrix( loopSize, LABvalues )
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
+% Calculate the euqlidiean distance with the crom a and b
+% loopSize is the number of rows and columns
+% LABvalues contains the Lab-values of the databas images
 
 load('DB.mat');
 

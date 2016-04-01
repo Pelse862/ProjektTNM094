@@ -1,9 +1,11 @@
 function LABvalues = Labsvalues( ca, blockSize, loopSize )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+% Calculate L*a*b and store it
+% ca is the database
+% blocksize is the database
+% loopSize is the number of rows and columns
 
 LABvalues = ones(blockSize,blockSize,3);
-%find lab values
+
 for n = 1:loopSize
     for j = 1:loopSize
         DBImage = ca{n,j};

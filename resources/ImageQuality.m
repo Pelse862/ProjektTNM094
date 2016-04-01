@@ -1,6 +1,7 @@
 function QualityValue = ImageQuality( originalImage, mosaicImage)
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+% Calculate the S-CIELab-value
+% originalImage is the input image
+% mosaic is the result image
 
 load('illum.mat');
 load('xyz.mat');
