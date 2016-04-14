@@ -66,9 +66,9 @@ for n = 1:loopSize
        Bdif = mean(mean(subImage(:,:,3))) - mean(mean(tileImage_RGB(:,:,3)));
        
        % Adding differnce and applying error diffusson
-       subImage(:,:,1) = errordif(subImage(:,:,1) + Rdif, filter);
-       subImage(:,:,2) = errordif(subImage(:,:,2) + Gdif, filter);
-       subImage(:,:,3) = errordif(subImage(:,:,3) + Bdif, filter);
+       subImage(:,:,1) = errordif(subImage(:,:,1), filter + Rdif);
+       subImage(:,:,2) = errordif(subImage(:,:,2), filter + Gdif);
+       subImage(:,:,3) = errordif(subImage(:,:,3), filter + Bdif);
        
        LabCorrected = Labsvalues({subImage}, blockSize, 1 );
        newSwapIndex = DBIndexMatrix( 1, LabCorrected );
@@ -95,7 +95,6 @@ for n = 1:loopSize
        correctedResultImage( (1+( (n-1)*blockSize)):(n*blockSize) , (1+( (j-1)*blockSize)):(j*blockSize),:) = tileImage_RGB;
        
    end
-   disp('4: Iteration ' + n)
 end
 
 figure;
